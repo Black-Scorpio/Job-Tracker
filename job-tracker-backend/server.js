@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const jobRoutes = require("./routes/jobs");
 
 const app = express();
 app.use(express.json());
@@ -10,6 +11,8 @@ mongoose
   .connect("mongodb://localhost:27017/jobtracker")
   .then(() => console.log("MongoDB connected..."))
   .catch((err) => console.log(err));
+
+app.use("/jobs", jobRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
