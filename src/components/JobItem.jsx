@@ -1,15 +1,22 @@
 import React from 'react';
+import { Card, CardContent, Typography } from '@mui/material';
 
-const JobItem = ({ job }) => {
+const JobItem = ({ job, selected, onSelect }) => {
   return (
-    <div>
-      <h3>{job.companyName}</h3>
-      <p>{job.jobTitle}</p>
-      <p>{new Date(job.applicationDate).toLocaleDateString()}</p>
-      <p>{job.status}</p>
-      <p>{job.jobDescription}</p>
-      <p>{job.notes}</p>
-    </div>
+    <Card
+      onClick={() => onSelect(job._id)}
+      sx={{
+        cursor: 'pointer',
+        backgroundColor: selected ? '#d3d3d3' : 'white',
+      }}
+    >
+      <CardContent>
+        <Typography variant="h6">{job.companyName}</Typography>
+        <Typography variant="subtitle1">{job.jobTitle}</Typography>
+        <Typography variant="body2">Date Applied: {new Date(job.applicationDate).toLocaleDateString()}</Typography>
+        <Typography variant="body2">Status: {job.status}</Typography>
+      </CardContent>
+    </Card>
   );
 };
 

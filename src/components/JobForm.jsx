@@ -1,18 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Button, Select, MenuItem, InputLabel, FormControl, Box, Typography } from '@mui/material';
-import { createJob } from '../api/jobs';
+import { createJob, updateJob, getJob } from '../api/jobs';
 
-const JobForm = () => {
-  const initialValues = {
+const JobForm = ({ jobId, onJobAdded, onCancel }) => {
+  const [initialValues, setInitialValues] = useState({
     companyName: '',
     jobTitle: '',
     applicationDate: '',
     jobDescription: '',
     status: 'Applied',
     notes: ''
-  };
+  });
+
+  useEffect(() => {
+    const fetchJob = async () => {
+      if (jobId) {
+        try {
+          const job = await getJob(jobId);
+          setInitialValues({
+            companyName: job.companyName || '',
+            jobTitle: job.jobTitle || '',
+            applicationDate: job.applicationDate ? job.applicationDate.split('T')[0] : '',
+            jobDescription: job.jobDescription || '',
+            status: job.status || 'Applied',
+            notes: job.notes || ''
+          });
+        } catch (error) {
+          console.error('There was an error fetching the job!', error);
+        }
+      } else {
+        setInitialValues({
+          companyName: '',
+          jobTitle: '',
+          applicationDate: '',
+          jobDescription: '',
+          status: 'Applied',
+          notes: ''
+        });
+      }
+    };
+    fetchJob();
+  }, [jobId]);
 
   const validationSchema = Yup.object({
     companyName: Yup.string().required('Required'),
@@ -25,17 +55,23 @@ const JobForm = () => {
 
   const onSubmit = async (values, { resetForm }) => {
     try {
-      await createJob(values);
-      alert('Job application added successfully');
+      if (jobId) {
+        await updateJob(jobId, values);
+        alert('Job application updated successfully');
+      } else {
+        await createJob(values);
+        alert('Job application added successfully');
+      }
       resetForm();
+      onJobAdded();
     } catch (error) {
-      console.error('There was an error adding the job application!', error);
+      console.error('There was an error submitting the job application!', error);
     }
   };
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-      {({ errors, touched }) => (
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} enableReinitialize>
+      {({ errors, touched, resetForm }) => (
         <Form>
           <Box
             sx={{
@@ -48,7 +84,7 @@ const JobForm = () => {
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Add Job Application
+              {jobId ? 'Edit Job Application' : 'Add Job Application'}
             </Typography>
             <Field
               name="companyName"
@@ -96,6 +132,7 @@ const JobForm = () => {
                 <MenuItem value="Applied">Applied</MenuItem>
                 <MenuItem value="Interviewing">Interviewing</MenuItem>
                 <MenuItem value="Rejected">Rejected</MenuItem>
+                <MenuItem value="Offered">Offered</MenuItem>
               </Field>
             </FormControl>
             <Field
@@ -107,15 +144,30 @@ const JobForm = () => {
               fullWidth
               margin="normal"
             />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ marginTop: '20px' }}
-            >
-              Add Job
-            </Button>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{ flexGrow: 1, marginRight: '10px' }}
+              >
+                {jobId ? 'Update Job' : 'Add Job'}
+              </Button>
+              {jobId && (
+                <Button
+                  type="button"
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    resetForm();
+                    onCancel();
+                  }}
+                  sx={{ flexGrow: 1 }}
+                >
+                  Cancel
+                </Button>
+              )}
+            </Box>
           </Box>
         </Form>
       )}

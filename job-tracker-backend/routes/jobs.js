@@ -24,6 +24,19 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Retrieve a job by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) {
+      return res.status(404).send();
+    }
+    res.send(job);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 // Update a job application
 router.put("/:id", async (req, res) => {
   try {
