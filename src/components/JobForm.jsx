@@ -120,7 +120,7 @@ const JobForm = ({ jobId, onJobAdded, onCancel }) => {
               as={TextField}
               label="Job Description"
               multiline
-              rows={4}
+              rows={3}
               fullWidth
               margin="normal"
               error={touched.jobDescription && !!errors.jobDescription}
@@ -140,7 +140,7 @@ const JobForm = ({ jobId, onJobAdded, onCancel }) => {
               as={TextField}
               label="Notes"
               multiline
-              rows={4}
+              rows={2}
               fullWidth
               margin="normal"
             />
