@@ -31,10 +31,11 @@ const JobForm = ({ jobId, onJobAdded, onCancel }) => {
           console.error('There was an error fetching the job!', error);
         }
       } else {
+        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
         setInitialValues({
           companyName: '',
           jobTitle: '',
-          applicationDate: '',
+          applicationDate: today,
           jobDescription: '',
           status: 'Applied',
           notes: ''

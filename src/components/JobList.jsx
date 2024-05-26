@@ -11,7 +11,7 @@ const JobList = ({ onEdit, refresh }) => {
   const [titleFilter, setTitleFilter] = useState('');
   const [companyFilter, setCompanyFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [dateRange, setDateRange] = useState('All');
+  const [dateRange, setDateRange] = useState('All (Dates)');
   const [selectAll, setSelectAll] = useState(false);
   const [open, setOpen] = useState(false);
   const [jobDetails, setJobDetails] = useState(null);
@@ -136,27 +136,28 @@ const JobList = ({ onEdit, refresh }) => {
       <Typography variant="h4" gutterBottom>
         Job Applications
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap' }}>
         <TextField
           label="Job Title"
           variant="outlined"
           value={titleFilter}
           onChange={(e) => setTitleFilter(e.target.value)}
-          sx={{ marginRight: '16px', flex: 1, backgroundColor: 'white' }}
+          sx={{ marginRight: '16px', flex: 1, backgroundColor: 'white', minWidth: '150px' }}
         />
         <TextField
           label="Company Name"
           variant="outlined"
           value={companyFilter}
           onChange={(e) => setCompanyFilter(e.target.value)}
-          sx={{ marginRight: '16px', flex: 1, backgroundColor: 'white' }}
+          sx={{ marginRight: '16px', flex: 1, backgroundColor: 'white', minWidth: '150px' }}
         />
-        <FormControl sx={{ marginRight: '16px', flex: 1, backgroundColor: 'white' }}>
+        <FormControl sx={{ marginRight: '16px', flex: 1, backgroundColor: 'white', minWidth: '150px' }}>
           <InputLabel>Status</InputLabel>
           <Select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             label="Status"
+            autoWidth
           >
             <MenuItem value=""><em>All</em></MenuItem>
             <MenuItem value="Applied">Applied</MenuItem>
@@ -165,13 +166,15 @@ const JobList = ({ onEdit, refresh }) => {
             <MenuItem value="Offered">Offered</MenuItem>
           </Select>
         </FormControl>
-        <FormControl sx={{ flex: 1, backgroundColor: 'white', minWidth: 150 }}>
+        <FormControl sx={{ flex: 1, backgroundColor: 'white', minWidth: '150px' }}>
           <Select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
             displayEmpty
+            label="Date Range"
+            autoWidth
           >
-            <MenuItem value="All">All</MenuItem>
+            <MenuItem value="All (Dates)"><em>All (Dates)</em></MenuItem>
             <MenuItem value="Today">Today</MenuItem>
             <MenuItem value="Yesterday">Yesterday</MenuItem>
             <MenuItem value="Last 7 Days">Last 7 Days</MenuItem>
@@ -185,7 +188,7 @@ const JobList = ({ onEdit, refresh }) => {
         label="Select All"
       />
       <Typography variant="body2" sx={{ marginBottom: '16px' }}>
-        {dateRange === 'All'
+        {dateRange === 'All (Dates)' || dateRange === ''
           ? 'Showing all jobs'
           : `Showing jobs from ${format(start, 'MM/dd/yyyy')} to ${format(end, 'MM/dd/yyyy')}`}
       </Typography>
